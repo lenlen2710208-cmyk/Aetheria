@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "crawl": "node services/firecrawl/crawler.mjs",
-    "normalize": "node services/normalize.js"
+    "normalize": "node services/normalize.js",
+    "validate": "node services/validate.js",
+    "publish": "node services/publish.js"
   },
   "dependencies": {
     "@firecrawl-js/sdk": "^2.16.0",
