@@ -1,0 +1,4 @@
+import fs from "node:fs/promises";
+const input=JSON.parse(await fs.readFile("data/raw-crawl.json","utf8"));const items=[];const seen=new Set();
+for(const page of input.sources||[]){for(const line of (page.markdown||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean)){const m=line.match(/^#{1,4}\s+(.{2,120})$/);if(!m)continue;const name=m[1].replace(/[|*]/g,"").trim();const key=name.toLowerCase();if(seen.has(key))continue;seen.add(key);items.push({id:`crawl-${items.length+1}`,name,type:"Chưa xác định",rarity:null,attributes:{},tags:[],source:"Chưa xác định",set:null,image:null,sourceUrl:page.url});}}
+await fs.writeFile("data/items.normalized.json",JSON.stringify({schemaVersion:1,generatedAt:new Date().toISOString(),itemCount:items.length,items},null,2));console.log("Normalized",items.length,"candidate records");
