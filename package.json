@@ -1,9 +1,23 @@
 {
-  "name":"aetheria",
-  "private":true,
-  "version":"0.1.0",
-  "type":"module",
-  "scripts":{"dev":"vite","build":"vite build","preview":"vite preview","crawl":"node services/firecrawl/crawler.mjs"},
-  "dependencies":{"@firecrawl-js/sdk":"^2.16.0","lucide-react":"^0.468.0","react":"^19.0.0","react-dom":"^19.0.0"},
-  "devDependencies":{"@vitejs/plugin-react":"^4.3.4","vite":"^6.0.5"}
+  "name": "aetheria",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "crawl": "node services/firecrawl/crawler.mjs",
+    "normalize": "node services/normalize.js"
+  },
+  "dependencies": {
+    "@firecrawl-js/sdk": "^2.16.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.5"
+  }
 }
