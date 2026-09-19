@@ -1,13 +1,13 @@
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
 import {Search,SlidersHorizontal,Sparkles,X} from 'lucide-react';
 import {filterItems} from '../services/filters.js';
 import VirtualGrid from '../components/VirtualGrid.jsx';
-import catalog from '../data/items.json';
+import {loadItems} from '../services/catalog.js';
 
 const ATTRS=['Đơn giản','Lộng lẫy','Thanh lịch','Năng động','Trưởng thành','Dễ thương','Gợi cảm','Kín đáo','Mát mẻ','Giữ ấm'];
 const TYPES=['Tóc','Đầm','Áo','Quần','Giày','Sức','Trang điểm','Phụ kiện','Vớ','Ngoài','Trang sức','Đặc biệt'];
 const SOURCES=['Shop','Lầu Mộng Cảnh','Chế tạo','Tiến hóa','Sự kiện','Ải','Khác'];
-const items=catalog.items||[];
+const [items,setItems]=useState([]);\n useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
 
 export default function Database(){
  const[q,setQ]=useState(''),[type,setType]=useState('Tất cả'),[source,setSource]=useState('Tất cả'),[attr,setAttr]=useState('Tất cả'),[rarity,setRarity]=useState('Tất cả');
