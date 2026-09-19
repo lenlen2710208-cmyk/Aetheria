@@ -1,0 +1,15 @@
+import fs from "node:fs/promises";
+const BWIKI="https://wiki.biligame.com/qjnn";
+const FANDOM="https://miracle-nikki.fandom.com";
+const limit=Number(process.env.WIKI_BATCH||100);
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function api(base,params){const u=new URL("/api.php",base);for(const [k,v] of Object.entries(params))u.searchParams.set(k,v);const r=await fetch(u,{headers:{"User-Agent":"Aetheria-fan-archive/1.0"}});if(!r.ok)throw new Error(`${base} API HTTP ${r.status}`);return r.json();}
+async function members(base,category){const out=[];let cont={};do{const d=await api(base,{action:"query",format:"json",list:"categorymembers",cmtitle:`Category:${category}`,cmlimit:String(limit),cmnamespace:"0",...cont});out.push(...(d.query?.categorymembers||[]));cont=d.continue||null;}while(cont);return out;}
+function clean(s){return String(s||"").replace(/<[^>]+>/g," ").replace(/\[\[|\]\]/g,"").replace(/\x27\x27\x27?/g,"").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim()}
+function parseWikitext(text,title,url){const pick=re=>clean((text.match(re)||[])[1]);const pairs={简约:"Đơn giản",华丽:"Lộng lẫy",清纯:"Trong sáng",性感:"Gợi cảm",活泼:"Năng động",优雅:"Thanh lịch",清凉:"Mát mẻ",保暖:"Giữ ấm",可爱:"Dễ thương",成熟:"Trưởng thành"};const attr={};for(const [cn,vn] of Object.entries(pairs)){const m=text.match(new RegExp(cn+"\\s*([SABC])"));if(m)attr[vn]=m[1]}const id=pick(/编号\s*=\s*([^\n|]+)/);const suit=pick(/套装\s*=\s*([^\n|]+)/);const source=pick(/来源\s*=\s*([^\n|]+)/);const version=pick(/版本\s*=\s*([^\n|]+)/);return{id:id||null,name:title,type:pick(/(发型|连衣裙|外套|上装|下装|袜子|鞋子|饰品|妆容|萤光之灵)/),rarity:(text.match(/♥/g)||[]).length||null,attributes:attr,set:suit||null,source:source||null,version:version||null,sourceUrl:url};}
+async function fetchPages(base,names){const out=[];for(let i=0;i<names.length;i+=limit){const batch=names.slice(i,i+limit);const d=await api(base,{action:"query",format:"json",prop:"revisions|info",rvprop:"content",rvslots:"main",inprop:"url",titles:batch.join("|")});for(const p of Object.values(d.query?.pages||{})){const text=p.revisions?.[0]?.slots?.main?.["*"]||"";if(text.includes("奇迹暖暖")&&text.includes("编号"))out.push(parseWikitext(text,p.title,p.fullurl||`${base}/${encodeURIComponent(p.title.replace(/ /g,"_"))}`));}await delay(150)}return out;}
+const bwNames=(await members(BWIKI,"部件")).map(x=>x.title);
+const bw=await fetchPages(BWIKI,bwNames);
+let fandom=[];try{const names=(await members(FANDOM,"Items")).map(x=>x.title);fandom=await fetchPages(FANDOM,names)}catch(e){console.warn("Fandom category sync skipped:",e.message)}
+const out={schemaVersion:1,updatedAt:new Date().toISOString(),status:"wiki-raw",sources:[{name:"BWIKI",url:BWIKI,count:bw.length},{name:"Miracle Nikki Fandom",url:FANDOM,count:fandom.length}],items:[...bw,...fandom]};
+await fs.mkdir("data",{recursive:true});await fs.writeFile("data/wiki-items.raw.json",JSON.stringify(out),"utf8");console.log(`Wiki extraction: BWIKI ${bw.length}, Fandom ${fandom.length}, total ${out.items.length}`);
