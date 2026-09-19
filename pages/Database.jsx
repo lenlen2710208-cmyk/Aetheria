@@ -1,21 +1,23 @@
-import {useMemo,useState} from "react";
-import {Search,SlidersHorizontal,Sparkles} from "lucide-react";
-import {filterItems} from "../services/filters.js";
-import {scoreItem} from "../services/scoring.js";
-import VirtualGrid from "../components/VirtualGrid.jsx";
-import catalog from "../data/items.json";
-const ATTRS=["Đơn giản","Lộng lẫy","Thanh lịch","Năng động","Trưởng thành","Dễ thương","Gợi cảm","Kín đáo","Mát mẻ","Giữ ấm"];
-const TYPES=["Tóc","Đầm","Áo","Quần","Giày","Sức","Trang điểm","Phụ kiện"];
-const SOURCES=["Shop","Lầu Mộng Cảnh","Chế tạo","Tiến hóa","Sự kiện"];
-const demo=[{id:"demo-1",name:"Tóc Ánh Trăng",type:"Tóc",rarity:5,source:"Sự kiện",tags:["Thanh lịch","Mát mẻ"],score:9876},{id:"demo-2",name:"Váy Hoa Ngọc",type:"Đầm",rarity:5,source:"Tiến hóa",tags:["Lộng lẫy","Dễ thương"],score:9821},{id:"demo-3",name:"Giày Bạch Ngọc",type:"Giày",rarity:4,source:"Shop",tags:["Thanh lịch","Đơn giản"],score:9410},{id:"demo-4",name:"Vương miện Tinh Vân",type:"Phụ kiện",rarity:5,source:"Sự kiện",tags:["Lộng lẫy","Trưởng thành"],score:9730},{id:"demo-5",name:"Mắt Sao Băng",type:"Trang điểm",rarity:5,source:"Lầu Mộng Cảnh",tags:["Gợi cảm","Trưởng thành"],score:9688},{id:"demo-6",name:"Áo Lavender",type:"Áo",rarity:4,source:"Chế tạo",tags:["Dễ thương","Kín đáo"],score:9180}];
-const items=(catalog.items?.length?catalog.items:demo).map(x=>({...x,score:x.score??scoreItem(x)}));
+import {useMemo,useState} from 'react';
+import {Search,SlidersHorizontal,Sparkles,X} from 'lucide-react';
+import {filterItems} from '../services/filters.js';
+import VirtualGrid from '../components/VirtualGrid.jsx';
+import catalog from '../data/items.json';
+
+const ATTRS=['Đơn giản','Lộng lẫy','Thanh lịch','Năng động','Trưởng thành','Dễ thương','Gợi cảm','Kín đáo','Mát mẻ','Giữ ấm'];
+const TYPES=['Tóc','Đầm','Áo','Quần','Giày','Sức','Trang điểm','Phụ kiện','Vớ','Ngoài','Trang sức','Đặc biệt'];
+const SOURCES=['Shop','Lầu Mộng Cảnh','Chế tạo','Tiến hóa','Sự kiện','Ải','Khác'];
+const items=catalog.items||[];
+
 export default function Database(){
- const[q,setQ]=useState(""),[type,setType]=useState("Tất cả"),[source,setSource]=useState("Tất cả"),[attr,setAttr]=useState("Tất cả");
- const data=useMemo(()=>filterItems(items,{query:q,type,source,attribute:attr}),[q,type,source,attr]);
- const renderItem=x=><article className="item"><div className="item-art">{x.image?<img src={x.image} alt="" loading="lazy"/>:<Sparkles/>}<span>#{x.id}</span></div><div className="item-body"><div className="item-title"><h3>{x.name}</h3><b>{"★".repeat(Math.max(0,Number(x.rarity)||0))}</b></div><p>{x.type} · {x.source}</p><div className="tags">{(x.tags||[]).map(t=><span key={t}>{t}</span>)}</div><div className="score">Điểm gợi ý <strong>{Number(x.score||0).toLocaleString("vi-VN")}</strong></div></div></article>;
- return <section className="page"><div className="page-head"><div><span className="eyebrow">DATABASE</span><h2>Kho Item</h2><p>Tra cứu thuộc tính, nguồn gốc và tag phong cách.</p></div><span className="count">{data.length.toLocaleString("vi-VN")} kết quả</span></div>
- <div className="search"><Search/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Tìm tên item..."/><SlidersHorizontal/></div>
- <div className="filters"><select value={type} onChange={e=>setType(e.target.value)}><option>Tất cả</option>{TYPES.map(x=><option key={x}>{x}</option>)}</select><select value={attr} onChange={e=>setAttr(e.target.value)}><option>Tất cả</option>{ATTRS.map(x=><option key={x}>{x}</option>)}</select><select value={source} onChange={e=>setSource(e.target.value)}><option>Tất cả</option>{SOURCES.map(x=><option key={x}>{x}</option>)}</select></div>
- {!catalog.items?.length&&<div className="data-banner">Đang dùng dữ liệu demo. Khi pipeline xác minh có dữ liệu thật, Aetheria sẽ tự hiển thị toàn bộ kho.</div>}
- <VirtualGrid items={data} renderItem={renderItem} rowHeight={330} columns={3}/></section>;
+ const[q,setQ]=useState(''),[type,setType]=useState('Tất cả'),[source,setSource]=useState('Tất cả'),[attr,setAttr]=useState('Tất cả'),[rarity,setRarity]=useState('Tất cả');
+ const data=useMemo(()=>filterItems(items,{query:q,type,source,attribute:attr,rarity}),[q,type,source,attr,rarity]);
+ const clear=()=>{setQ('');setType('Tất cả');setSource('Tất cả');setAttr('Tất cả');setRarity('Tất cả')};
+ const renderItem=x=><article className="item"><div className="item-art">{x.image?<img src={x.image} alt="" loading="lazy"/>:<Sparkles/>}<span>#{x.id}</span></div><div className="item-body"><div className="item-title"><h3>{x.name}</h3><b>{x.rarity?'★'.repeat(Number(x.rarity)):''}</b></div><p>{x.type||'Chưa phân loại'} · {x.source||'Chưa xác định'}</p><div className="tags">{(x.tags||[]).map(t=><span key={t}>{t}</span>)}</div><div className="score"><span>Thuộc tính</span><strong>{Object.keys(x.attributes||{}).length||0}/10</strong></div></div></article>;
+ return <section className="page">
+  <div className="page-head"><div><span className="eyebrow">KHO ĐỒ</span><h2>Tất cả item</h2><p>Tìm kiếm theo tên, loại, thuộc tính, nguồn và độ hiếm.</p></div><span className="count">{data.length.toLocaleString('vi-VN')} / {items.length.toLocaleString('vi-VN')}</span></div>
+  <div className="search"><Search/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Tìm tên item..."/>{q&&<button className="clear-search" onClick={()=>setQ('')}><X size={15}/></button>}<SlidersHorizontal/></div>
+  <div className="filter-bar"><select value={type} onChange={e=>setType(e.target.value)}><option>Tất cả loại</option>{TYPES.map(x=><option key={x} value={x}>{x}</option>)}</select><select value={attr} onChange={e=>setAttr(e.target.value)}><option>Tất cả thuộc tính</option>{ATTRS.map(x=><option key={x} value={x}>{x}</option>)}</select><select value={rarity} onChange={e=>setRarity(e.target.value)}><option>Tất cả sao</option>{[1,2,3,4,5].map(x=><option key={x} value={x}>{x} sao</option>)}</select><select value={source} onChange={e=>setSource(e.target.value)}><option>Tất cả nguồn</option>{SOURCES.map(x=><option key={x} value={x}>{x}</option>)}</select><button className="reset" onClick={clear}>Đặt lại</button></div>
+  {!items.length?<div className="empty-state"><Sparkles size={30}/><h3>Chưa có item thật</h3><p>Kho đang chờ pipeline dữ liệu xác minh. Khi có dữ liệu, bộ lọc này sẽ hoạt động trên toàn bộ catalog.</p></div>:<VirtualGrid items={data} renderItem={renderItem} rowHeight={330} columns={3}/>}
+ </section>
 }
