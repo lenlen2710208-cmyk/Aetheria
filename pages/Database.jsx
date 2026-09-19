@@ -7,11 +7,12 @@ import {loadItems} from '../services/catalog.js';
 const ATTRS=['Đơn giản','Lộng lẫy','Thanh lịch','Năng động','Trưởng thành','Dễ thương','Gợi cảm','Kín đáo','Mát mẻ','Giữ ấm'];
 const TYPES=['Tóc','Đầm','Áo','Quần','Giày','Sức','Trang điểm','Phụ kiện','Vớ','Ngoài','Trang sức','Đặc biệt'];
 const SOURCES=['Shop','Lầu Mộng Cảnh','Chế tạo','Tiến hóa','Sự kiện','Ải','Khác'];
-const [items,setItems]=useState([]);\n useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
 
-export default function Database(){\n const [items,setItems]=useState([]);\n useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
+export default function Database(){
+ const [items,setItems]=useState([]);
+ useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
  const[q,setQ]=useState(''),[type,setType]=useState('Tất cả'),[source,setSource]=useState('Tất cả'),[attr,setAttr]=useState('Tất cả'),[rarity,setRarity]=useState('Tất cả');
- const data=useMemo(()=>filterItems(items,{query:q,type,source,attribute:attr,rarity}),[q,type,source,attr,rarity]);
+ const data=useMemo(()=>filterItems(items,{query:q,type,source,attribute:attr,rarity}),[items,q,type,source,attr,rarity]);
  const clear=()=>{setQ('');setType('Tất cả');setSource('Tất cả');setAttr('Tất cả');setRarity('Tất cả')};
  const renderItem=x=><article className="item"><div className="item-art">{x.image?<img src={x.image} alt="" loading="lazy"/>:<Sparkles/>}<span>#{x.id}</span></div><div className="item-body"><div className="item-title"><h3>{x.name}</h3><b>{x.rarity?'★'.repeat(Number(x.rarity)):''}</b></div><p>{x.type||'Chưa phân loại'} · {x.source||'Chưa xác định'}</p><div className="tags">{(x.tags||[]).map(t=><span key={t}>{t}</span>)}</div><div className="score"><span>Thuộc tính</span><strong>{Object.keys(x.attributes||{}).length||0}/10</strong></div></div></article>;
  return <section className="page">
