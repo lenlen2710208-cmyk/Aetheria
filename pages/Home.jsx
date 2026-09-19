@@ -2,7 +2,7 @@ import {Database,Trophy,Heart,Layers,Map,Search,ChevronRight,Sparkles} from 'luc
 import {useEffect,useState} from 'react';
 import {loadItems} from '../services/catalog.js';
 export default function Home({setPage}){
- const count=catalog.items?.length||0;
+ const [count,setCount]=useState(0);\n useEffect(()=>{loadItems().then(x=>setCount(x.length)).catch(()=>{});},[]);
  const cards=[
   ['database','Kho đồ',Database,'Tra cứu item, thuộc tính, tag và nguồn gốc.'],
   ['suits','Trang phục',Layers,'Xem bộ trang phục và các món thuộc cùng set.'],
