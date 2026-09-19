@@ -1,5 +1,6 @@
 import {Database,Trophy,Heart,Layers,Map,Search,ChevronRight,Sparkles} from 'lucide-react';
-import catalog from '../data/items.json';
+import {useEffect,useState} from 'react';
+import {loadItems} from '../services/catalog.js';
 export default function Home({setPage}){
  const count=catalog.items?.length||0;
  const cards=[
