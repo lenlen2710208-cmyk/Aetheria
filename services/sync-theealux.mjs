@@ -1,0 +1,10 @@
+import fs from "node:fs/promises";
+const url="https://raw.githubusercontent.com/lenlen2710208-cmyk/Theealux/main/data/items.json";
+const response=await fetch(url);
+if(!response.ok) throw new Error(`Theealux dataset HTTP ${response.status}`);
+const raw=await response.json();
+if(!Array.isArray(raw.items)||raw.items.length<1000) throw new Error("Theealux dataset không hợp lệ hoặc quá ít item");
+const attrs={gorgeous:"Lộng lẫy",simple:"Đơn giản",elegant:"Thanh lịch",lively:"Năng động",mature:"Trưởng thành",cute:"Dễ thương",sexy:"Gợi cảm",pure:"Trong sáng",warm:"Giữ ấm",cool:"Mát mẻ"};
+const items=raw.items.map(x=>{const attributes={};for(const [key,label] of Object.entries(attrs)){if(Number.isFinite(Number(x[key])))attributes[label]=Number(x[key]);}return{id:String(x.id),name:String(x.name||"").trim(),type:x.category||"Chưa phân loại",rarity:x.rarity??null,source:x.source||"Chưa xác định",tags:Array.isArray(x.tags)?x.tags.flatMap(v=>typeof v==="string"?v.split(",").map(s=>s.trim()).filter(Boolean):[]).filter(Boolean):[],set:x.suit||null,image:x.image||null,sourceUrl:x.sourceUrl||null,attributes};}).filter(x=>x.id&&x.name);
+const out={schemaVersion:1,updatedAt:new Date().toISOString(),status:"theealux-sync",source:"Theealux",sourceUrl:url,itemCount:items.length,items};
+await fs.mkdir("data",{recursive:true});await fs.writeFile("data/items.json",JSON.stringify(out),"utf8");console.log(`Synced ${items.length.toLocaleString("vi-VN")} items from Theealux`);
