@@ -1,24 +1,18 @@
 {
-  "name": "aetheria",
-  "private": true,
-  "version": "0.2.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "crawl": "node services/firecrawl/crawler.mjs",
-    "normalize": "node services/normalize.js",
-    "validate": "node services/validate.js",
-    "publish": "node services/publish.js"
+  "name":"aetheria",
+  "private":true,
+  "version":"0.3.0",
+  "type":"module",
+  "scripts":{
+    "dev":"vite",
+    "build":"vite build",
+    "preview":"vite preview",
+    "sync:theealux":"node services/sync-theealux.mjs",
+    "crawl":"node services/firecrawl/crawler.mjs",
+    "normalize":"node services/normalize.js",
+    "validate":"node services/validate.js",
+    "publish":"node services/publish.js"
   },
-  "dependencies": {
-    "lucide-react": "^0.468.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.5"
-  }
+  "dependencies":{"lucide-react":"^0.468.0","react":"^19.0.0","react-dom":"^19.0.0"},
+  "devDependencies":{"@vitejs/plugin-react":"^4.3.4","vite":"^6.0.5"}
 }
