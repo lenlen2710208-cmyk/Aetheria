@@ -9,7 +9,7 @@ const TYPES=['Tóc','Đầm','Áo','Quần','Giày','Sức','Trang điểm','Ph�
 const SOURCES=['Shop','Lầu Mộng Cảnh','Chế tạo','Tiến hóa','Sự kiện','Ải','Khác'];
 const [items,setItems]=useState([]);\n useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
 
-export default function Database(){
+export default function Database(){\n const [items,setItems]=useState([]);\n useEffect(()=>{loadItems().then(setItems).catch(()=>{});},[]);
  const[q,setQ]=useState(''),[type,setType]=useState('Tất cả'),[source,setSource]=useState('Tất cả'),[attr,setAttr]=useState('Tất cả'),[rarity,setRarity]=useState('Tất cả');
  const data=useMemo(()=>filterItems(items,{query:q,type,source,attribute:attr,rarity}),[q,type,source,attr,rarity]);
  const clear=()=>{setQ('');setType('Tất cả');setSource('Tất cả');setAttr('Tất cả');setRarity('Tất cả')};
