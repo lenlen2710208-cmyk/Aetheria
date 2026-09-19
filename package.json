@@ -12,7 +12,8 @@
     "normalize": "node services/normalize.js",
     "validate": "node services/validate.js",
     "publish": "node services/publish.js",
-    "sync:wikis": "node services/sync-wikis.mjs"
+    "sync:wikis": "node services/sync-wikis.mjs",
+    "sync:stages": "node services/sync-theealux-stages.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
