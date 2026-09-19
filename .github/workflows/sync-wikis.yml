@@ -1,0 +1,26 @@
+name: Sync Wiki Sources
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: "MediaWiki batch size"
+        required: false
+        default: "100"
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: WIKI_BATCH=${{ inputs.batch }} npm run sync:wikis
+      - name: Commit wiki snapshot
+        run: |
+          git config user.name "aetheria-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/wiki-items.raw.json
+          git diff --cached --quiet || git commit -m "data: refresh BWIKI and Fandom item snapshot"
+          git push
