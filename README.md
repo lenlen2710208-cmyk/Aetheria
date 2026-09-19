@@ -28,3 +28,7 @@ Không dùng item giả để thay thế dữ liệu game thật. Khi nguồn d�
 Workflow deploy nằm tại `.github/workflows/deploy.yml` và chạy khi push lên `main`.
 
 Aetheria là dự án fanmade, không phải sản phẩm chính thức của VNG.
+
+
+## Archive UX
+Cấu trúc kho đồ của Aetheria được thiết kế theo mô hình archive: Kho đồ, Trang phục/BST, Tủ của tôi, Chặng đấu và Bảng vàng; dữ liệu thật luôn được ưu tiên hơn dữ liệu minh họa.
