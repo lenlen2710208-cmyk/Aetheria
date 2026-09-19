@@ -22,6 +22,8 @@ jobs:
           node-version: 20
       - name: Sync real Theealux catalog
         run: npm run sync:theealux
+      - name: Sync verified stages
+        run: npm run sync:stages
       - name: Install dependencies
         run: npm install
       - name: Build
