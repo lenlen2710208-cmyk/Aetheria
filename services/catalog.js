@@ -1,0 +1,1 @@
+let promise;export function loadItems(){if(!promise){const url=new URL("../data/items.json",import.meta.url);promise=fetch(url).then(r=>{if(!r.ok)throw new Error(`Catalog HTTP ${r.status}`);return r.json()}).then(x=>x.items||[]);}return promise;}
